@@ -1,0 +1,99 @@
+# REINVENT4 TOML scoring
+#
+
+run_type = "scoring"
+device = "cpu"
+json_out_config = "_scoring.json"  # write this TOML to JSON
+
+[parameters]
+
+smiles_file = "./scoring/smiles_laplace_std_scaling.smi"  # SMILES file with 1 molecule per line
+output_csv = "./scoring/scoring_laplace_std_scaling.csv"  # name of output CSV to write, optional
+
+
+[scoring]
+
+type = "geometric_mean"  # or arithmetic_mean
+parallel = 1  # do not run scoring components in parallel
+
+[[scoring.component]]
+[scoring.component.MolecularWeight]
+
+[[scoring.component.MolecularWeight.endpoint]]
+name = "MW"
+weight = 1
+
+# transforms can be used for any component if desired
+transform.type = "double_sigmoid"
+transform.high = 500.0
+transform.low = 200.0
+transform.coef_div = 500.0
+transform.coef_si = 20.0
+transform.coef_se = 20.0
+
+[[scoring.component]]
+[scoring.component.NumHeavyAtoms]
+[[scoring.component.NumHeavyAtoms.endpoint]]
+name = "Number of Heavy atoms"
+weight = 1
+transform.type = "reverse_sigmoid"
+transform.high = 80
+transform.low = 20
+transform.k = 0.5
+
+[[scoring.component]]
+[scoring.component.HBondAcceptors]
+[[scoring.component.HBondAcceptors.endpoint]]
+name = "Number of HB acceptors (Lipinski)"
+weight = 1
+transform.type = "reverse_sigmoid"
+transform.high = 10
+transform.low = 8
+transform.k = 0.5
+
+[[scoring.component]]
+[scoring.component.HBondDonors]
+[[scoring.component.HBondDonors.endpoint]]
+name = "Number of HB donors (Lipinski)"
+weight = 1
+transform.type = "reverse_sigmoid"
+transform.high = 4
+transform.low = 0
+transform.k = 0.5
+
+[[scoring.component]]
+[scoring.component.NumAromaticRings]
+[[scoring.component.NumAromaticRings.endpoint]]
+name = "Number of aromatic rings"
+weight = 1
+transform.type = "reverse_sigmoid"
+transform.high = 3
+transform.low = 0
+transform.k =  0.5
+
+[[scoring.component]]
+[scoring.component.SlogP]
+[[scoring.component.SlogP.endpoint]]
+name = "SlogP (RDKit)"
+weight = 1
+transform.type = "reverse_sigmoid"
+transform.high = 3
+transform.low = 1
+transform.k = 0.5
+
+[[scoring.component]]
+[scoring.component.NumRotBond]
+[[scoring.component.NumRotBond.endpoint]]
+name = "Number of rotatable bonds"
+weight = 1
+transform.type = "reverse_sigmoid"
+transform.high = 20
+transform.low = 0
+transform.k = 0.5
+
+# Scoring components about drug-likeness, synthesizability & reactions:
+[[scoring.component]]
+[scoring.component.SAScore]
+[[scoring.component.SAScore.endpoint]]
+name = "SA score"
+weight = 1
