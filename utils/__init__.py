@@ -1,7 +1,7 @@
 """
-===========================================
-Various functions used across the notebooks
-===========================================
+=====================================================
+Various generalized Laplace Active subspace functions
+=====================================================
 """
 
 import numpy as np
