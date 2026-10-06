@@ -1,0 +1,152 @@
+{
+    "run_type": "scoring",
+    "device": "cpu",
+    "tb_logdir": null,
+    "json_out_config": "_scoring.json",
+    "seed": null,
+    "parameters": {
+        "smiles_file": "./scoring/smiles_laplace_gen_scaling.smi",
+        "output_csv": "./scoring/scoring_laplace_gen_scaling.csv",
+        "smiles_column": "SMILES",
+        "standardize_smiles": true
+    },
+    "scoring": {
+        "type": "geometric_mean",
+        "parallel": 1,
+        "component": [
+            {
+                "MolecularWeight": {
+                    "endpoint": [
+                        {
+                            "name": "MW",
+                            "weight": 1,
+                            "transform": {
+                                "type": "double_sigmoid",
+                                "high": 500.0,
+                                "low": 200.0,
+                                "coef_div": 500.0,
+                                "coef_si": 20.0,
+                                "coef_se": 20.0
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "NumHeavyAtoms": {
+                    "endpoint": [
+                        {
+                            "name": "Number of Heavy atoms",
+                            "weight": 1,
+                            "transform": {
+                                "type": "reverse_sigmoid",
+                                "high": 80,
+                                "low": 20,
+                                "k": 0.5
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "HBondAcceptors": {
+                    "endpoint": [
+                        {
+                            "name": "Number of HB acceptors (Lipinski)",
+                            "weight": 1,
+                            "transform": {
+                                "type": "reverse_sigmoid",
+                                "high": 10,
+                                "low": 8,
+                                "k": 0.5
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "HBondDonors": {
+                    "endpoint": [
+                        {
+                            "name": "Number of HB donors (Lipinski)",
+                            "weight": 1,
+                            "transform": {
+                                "type": "reverse_sigmoid",
+                                "high": 4,
+                                "low": 0,
+                                "k": 0.5
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "NumAromaticRings": {
+                    "endpoint": [
+                        {
+                            "name": "Number of aromatic rings",
+                            "weight": 1,
+                            "transform": {
+                                "type": "reverse_sigmoid",
+                                "high": 3,
+                                "low": 0,
+                                "k": 0.5
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "SlogP": {
+                    "endpoint": [
+                        {
+                            "name": "SlogP (RDKit)",
+                            "weight": 1,
+                            "transform": {
+                                "type": "reverse_sigmoid",
+                                "high": 3,
+                                "low": 1,
+                                "k": 0.5
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "NumRotBond": {
+                    "endpoint": [
+                        {
+                            "name": "Number of rotatable bonds",
+                            "weight": 1,
+                            "transform": {
+                                "type": "reverse_sigmoid",
+                                "high": 20,
+                                "low": 0,
+                                "k": 0.5
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "SAScore": {
+                    "endpoint": [
+                        {
+                            "name": "SA score",
+                            "weight": 1
+                        }
+                    ]
+                }
+            }
+        ],
+        "filename": null
+    },
+    "scheduler": null,
+    "responder": null,
+    "filter": null,
+    "stage": null,
+    "learning_strategy": null,
+    "diversity_filter": null,
+    "intrinsic_penalty": null,
+    "inception": null
+}
